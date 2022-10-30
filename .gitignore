@@ -4,3 +4,4 @@ env.py
 .vscode/*
 __pycache__/*
 *.csv
+process.ipynb

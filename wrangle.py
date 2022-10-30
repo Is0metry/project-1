@@ -1,15 +1,17 @@
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import precision_score
 import os, re,pydoc
 from env import get_db_url
 
 
 # CAT_COLS is a constant list of all columns which contain boolean values. Primarily used in clean_rows algorithm, but also used in exploration
-CAT_COLS = ['partner','churn','multiple_lines','online_security','online_backup','device_protection',\
-'tech_support','streaming_tv','streaming_movies','paperless_billing','dependents','phone_service']
-CONTRACT_KEY = ['Month-to-month','One year','Two year']
-IST_KEY = ['DSL','Fiber optic','None']
+ADD_ONS = ['online_security','online_backup','device_protection',\
+'tech_support','streaming_tv','streaming_movies','paperless_billing','multiple_lines']
+CAT_COLS = ADD_ONS + ['dependents','phone_service','churn','partner']
+CONTRACT_KEY = ['Month-to-month','One year','partner','Two year']
+IST_KEY = ['None','DSL','Fiber optic']
 PAYMENT_KEY = ['Bank transfer (automatic)','Credit card (automatic)','Electronic check','Mailed check']
 def clean_data_path(filename:str)->str:
     '''clean_data_path takes a string with the name of a file and modifies it to fit the desired filepath format i.e. data/*.csv'''
@@ -97,7 +99,9 @@ def prep_telco(telco_df:pd.DataFrame):
     telco_df.payment_type = telco_df.payment_type.astype(np.uint8)
     telco_df.senior_citizen = telco_df.senior_citizen.astype(np.uint8)
     telco_df.tenure = telco_df.tenure.astype(np.uint8)
-    return tvt_split(telco_df, 'churn')
+    telco_df['add_ons'] = telco_df[ADD_ONS].sum(axis='columns')
+    return telco_df
+
 
 if __name__ == '__main__':
     telco_df = get_telco_data()
