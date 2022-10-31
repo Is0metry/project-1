@@ -3,6 +3,23 @@
 * Use those drivers to build a model of that churn
 * Try to predict whether a customer is likely to churn
 
+# Plan
+- Acquire data from database or [Kaggle](https://www.kaggle.com/datasets/blastchar/telco-customer-churn)
+- Prepare data
+	- Create engineered features using existing data:
+		- add_ons
+- Explore data in search of drivers of churn
+	- Answer the following initial questions
+		- Does internet service type affect churn?
+		- Do internet customers with tech support churn less?
+		- Does gender affect churn?
+		- Does number of add-ons affect churn?
+- Model data
+    - Use drivers identified in explore to build predictive models of different types
+    - Evaluate models on train and validate data
+    - Select the best model based on highest accuracy
+    - Evaluate the best model on test data
+- Draw conclusions
 
 # Data Dictionary
 **Feature** | **Definition**
@@ -27,7 +44,7 @@
 **contract_type** | encoded type of customer's contract type (see relevant value dictionary sections below)
 **internet_service\_type** | encoded type of internet service type (see relevant value dictionary below)
 **payment_type** | encoded payment type (see relevant value dictionary below)
-
+**add_ons** | number of add-ons associated with customer's account
 # Value Dictionaries
 *Note: values are encoded in alphabetical order*
 ## contract_type
@@ -56,3 +73,22 @@ encoded value |actual value
 2. provide env.py file with hostname, username, and password, and database for telco data **OR** download `.csv` file from [Kaggle](https://www.kaggle.com/datasets/blastchar/telco-customer-churn)
 3. Place `.csv` file in `data/telco.csv`
 3. run the notebook
+
+# Conclusions:
+## Exploration:
+- Churn impacts roughtly a quarter of current customer base
+- Fiber optic customers churn the most
+    - This appears to be mitigated with tech support
+- More add-ons = more tenure
+- customer's gender does not appear to have an effect on churn
+
+## Modeling
+**The final model significantly outperformed baseline in terms of precision**
+
+## Recommendations:
+- Bundle add-ons, as a greater number of add-ons appears to reduce customer churn
+- Offer technical support for all internet users, or, more precisely, fiber optic users
+
+## Next Steps:
+- Investigate individual add-ons for correlation with customer churn
+- Investigate demographics in order to better target customers for long-term growth.

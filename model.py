@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from typing import Tuple
 from wrangle import ADD_ONS
 from IPython.display import Markdown as md
 from sklearn.metrics import ConfusionMatrixDisplay,precision_score
@@ -68,7 +69,7 @@ def get_knn(train_x:pd.DataFrame,train_y:pd.DataFrame,\
     ret_str = f'### K Nearest Neighbors precision on `train`: {precision_train}.\
         \n\n ### K Nearest Neighbors precision on `validate`: {precision_valid}.'
     return md(ret_str)
-def rf_on_test(train_x,train_y,test_x,test_y)->md:
+def rf_on_test(cid:pd.Series, train_x,train_y,test_x,test_y)->Tuple[pd.DataFrame,md]:
     '''rf_on_test takes in the features and targets of the train and test DataFrames,
     trains a RandomForestClassifier model on the training data, predicts the 
     outcome on the test data set, and returns an IPython.display.Markdown objedt
@@ -76,5 +77,13 @@ def rf_on_test(train_x,train_y,test_x,test_y)->md:
     rf = RandomForestClassifier(min_samples_leaf=100, max_depth=6)
     rf.fit(train_x, train_y)
     test_predict = rf.predict(test_x)
+    test_prob = rf.predict_proba(test_x)
+    prob_of_churn = []
+    for p in test_prob:
+        prob_of_churn.append(p[1])
+    ret_df = pd.DataFrame()
+    ret_df['customer_id'] = cid
+    ret_df['probability_of_churn'] = prob_of_churn
+    ret_df['prediction'] = test_predict
     precision_test = precision_score(test_y,test_predict)
-    return md(f'### Random Forest precision on `validate`: {precision_test}')
+    return ret_df, md(f'### Random Forest precision on `validate`: {precision_test}')

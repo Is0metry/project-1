@@ -10,7 +10,7 @@ from env import host, user,password
 ADD_ONS = ['online_security','online_backup','device_protection',\
 'tech_support','streaming_tv','streaming_movies','paperless_billing','multiple_lines']
 '''CAT_COLS is a constant list containing all categorical features in the data frame'''
-CAT_COLS = ADD_ONS + ['senior_citizen','dependents','phone_service','churn','partner']
+CAT_COLS = ADD_ONS + ['dependents','phone_service','churn','partner']
 
 CONTRACT_KEY = ['Month-to-month','One year',' partner','Two year']
 IST_KEY = ['None','DSL','Fiber optic']
@@ -97,8 +97,8 @@ def prep_telco(telco_df:pd.DataFrame):
     droping 'id' types, applying clean_rows function (see above) row-wise. It converts payment_type, senior_citizen, and tenure to unsigned
     8-bit integers in order to conserve memory. Finally, it returns tvt_split of the DataFrame, returning a tuple of DataFrames for training,
     validating, and testing '''
-    telco_df = telco_df.drop(['payment_type_id','internet_service_type_id','contract_type_id','customer_id'],axis=1)
-    telco_df = telco_df.apply(clean_rows,axis='columns')
+    telco_df = telco_df.drop(['payment_type_id','internet_service_type_id','contract_type_id'],axis=1)
+    telco_df = telco_df.apply(clean_rows,axis=1)
     telco_df.total_charges = pd.to_numeric(telco_df.total_charges)
     telco_df.gender = telco_df.gender.astype(np.uint8)
     telco_df = telco_df.rename(columns={'gender':'is_male'})
