@@ -3,16 +3,22 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import precision_score
 import os, re,pydoc
-from env import get_db_url
+from env import host, user,password
 
 
-# CAT_COLS is a constant list of all columns which contain boolean values. Primarily used in clean_rows algorithm, but also used in exploration
+# Add-ons used for cleaning 
 ADD_ONS = ['online_security','online_backup','device_protection',\
 'tech_support','streaming_tv','streaming_movies','paperless_billing','multiple_lines']
-CAT_COLS = ADD_ONS + ['dependents','phone_service','churn','partner']
-CONTRACT_KEY = ['Month-to-month','One year','partner','Two year']
+'''CAT_COLS is a constant list containing all categorical features in the data frame'''
+CAT_COLS = ADD_ONS + ['senior_citizen','dependents','phone_service','churn','partner']
+
+CONTRACT_KEY = ['Month-to-month','One year',' partner','Two year']
 IST_KEY = ['None','DSL','Fiber optic']
 PAYMENT_KEY = ['Bank transfer (automatic)','Credit card (automatic)','Electronic check','Mailed check']
+def get_db_url(database:str):
+    '''get_db_url takes a str with the database to connect to and returns a formatted string
+    with the hostname, username, and password imported from env.py'''
+    return f'mysql+pymysql://{user}:{password}@{host}/{database}'
 def clean_data_path(filename:str)->str:
     '''clean_data_path takes a string with the name of a file and modifies it to fit the desired filepath format i.e. data/*.csv'''
     if not filename.startswith('data/'):
@@ -101,10 +107,3 @@ def prep_telco(telco_df:pd.DataFrame):
     telco_df.tenure = telco_df.tenure.astype(np.uint8)
     telco_df['add_ons'] = telco_df[ADD_ONS].sum(axis='columns')
     return telco_df
-
-
-if __name__ == '__main__':
-    telco_df = get_telco_data()
-    print(telco_df.payment_type.value_counts())
-    train, validate,test = prep_telco(telco_df)
-    pydoc.help()
